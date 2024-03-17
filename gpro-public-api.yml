@@ -1,7 +1,9 @@
 openapi: 3.1.0
 info:
   description: |
-    # GPRO Public API Documentation
+    # Introduction
+
+    GPRO API is a development meant to serve GPRO Applications Frontend.
   title: GPRO App Public API
   version: '1.0.0'
   x-logo:
