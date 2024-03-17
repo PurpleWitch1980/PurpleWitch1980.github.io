@@ -3,7 +3,7 @@ info:
   description: |
     # Introduction
 
-    GPRO API is a development meant to serve GPRO Applications Frontend.
+    GPRO API is a development meant to serve GPRO Application's Frontend.
   title: GPRO App Public API
   version: '1.0.0'
   x-logo:
