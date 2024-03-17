@@ -17,20 +17,26 @@
       }
     </style>
   </head>
-  <body>
+  <body style="background-color: whitesmoke;">
     <redoc spec-url='gpro-public-api.yml' hide-download-button></redoc>
     <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
     <script>
       Redoc.init('gpro-public-api.yml', {
           theme: {
               sidebar: {
-                  backgroundColor: '#1B2D47', // Customize sidebar background color
-                  textColor: '#FFFFFF'
+                  backgroundColor: '#1B2D47',
+                  textColor: '#FFFFFF',
+                  groupItems: {
+                    activeBackgroundColor: '#34547F',
+                  },
+                  level1Items: {
+                    activeBackgroundColor: '#34547F',
+                  },
               },
               rightPanel: {
-                  backgroundColor: '#1B2D47', // Customize right panel background color
+                  backgroundColor: '#1B2D47',
               },
-          },
+          },          
       });
     </script>
   </body>
