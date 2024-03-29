@@ -47,6 +47,8 @@ x-tagGroups:
 
 paths:
   /{lang}/backend/api/MenuV2.asp:
+    parameters:
+      - $ref: '#/components/parameters/Lang'
     get:
       tags: 
         - Manager Resources
@@ -57,6 +59,7 @@ paths:
       responses:
         '200':    
           description: Menu Response
+          x-summary: Menu Response
           content:
             application/json:
               schema:
@@ -74,6 +77,7 @@ paths:
       responses:
         '200':    
           description: Office Response
+          x-summary: Office Response
           content:
             application/json:
               schema:
@@ -91,6 +95,7 @@ paths:
       responses:
         '200':
           description: Get Car Response
+          x-summary: Get Car Response
           content:
             application/json:
               schema:
@@ -108,6 +113,7 @@ paths:
       responses:
         '200':
           description: Practice Laps + Q1 Response
+          x-summary: Practice Laps + Q1 Response
           content:
             application/json:
               schema:
@@ -125,6 +131,7 @@ paths:
       responses:
         '200':
           description: Qualy2 Lap Response
+          x-summary: Qualy2 Lap Response
           content:
             application/json:
               schema:
@@ -142,11 +149,14 @@ paths:
       responses:
         '200':
           description: Testing Stints Response
+          x-summary: Testing Stints Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TestingResponse'    
   /{lang}/backend/api/Tracks.asp:
+    parameters:
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
         - Tracks
@@ -157,6 +167,7 @@ paths:
       responses:
         '200':
           description: All tracks response
+          x-summary: All tracks response
           content:
             application/json:
               schema:
@@ -177,6 +188,7 @@ paths:
       responses:
         '200':
           description: Track Profile Data Response
+          x-summary: Track Profile Data Response
           content:
             application/json:
               schema:
@@ -219,6 +231,7 @@ paths:
       responses:
         '200':
           description: Available Drivers Response
+          x-summary: Available Drivers Response
           content:
             application/json:
               schema:
@@ -241,6 +254,7 @@ paths:
       responses:
         '200':
           description: Driver Profile Data Response
+          x-summary: Driver Profile Data Response
           content:
             application/json:
               schema:
@@ -278,6 +292,7 @@ paths:
       responses:
         '200':
           description: Available TDs Response
+          x-summary: Available TDs Response
           content:
             application/json:
               schema:
@@ -300,6 +315,7 @@ paths:
       responses:
         '200':
           description: TD Profile Data Response
+          x-summary: TD Profile Data Response
           content:
             application/json:
               schema:
@@ -323,6 +339,7 @@ paths:
       responses:
         '200':
           description: Calendar Response
+          x-summary: Calendar Response
           content:
             application/json:
               schema:
@@ -340,6 +357,7 @@ paths:
       responses:
         '200':
           description: Negotiations Overview Response
+          x-summary: Negotiations Overview Response
           content:
             application/json:
               schema:
@@ -361,6 +379,7 @@ paths:
       responses:
         '200':
           description: Available Sponsors Response
+          x-summary: Available Sponsors Response
           content:
             application/json:
               schema:
@@ -380,6 +399,7 @@ paths:
       responses:
         '200':
           description: Sponsor Profile Response
+          x-summary: Sponsor Profile Response
           content:
             application/json:
               schema:
@@ -397,6 +417,7 @@ paths:
       responses:
         '200':
           description: Race Setup Response
+          x-summary: Race Setup Response
           content:
             application/json:
               schema:
@@ -414,6 +435,7 @@ paths:
       responses:
         '200':
           description: Staff & Facilities Response
+          x-summary: Staff & Facilities Response
           content:
             application/json:
               schema:
@@ -435,6 +457,7 @@ paths:
       responses:
         '200':
           description: Race Analysis Response
+          x-summary: Race Analysis Response
           content:
             application/json:
               schema:
@@ -456,6 +479,7 @@ paths:
       responses:
         '200':
           description: Economy History Response
+          x-summary: Economy History Response
           content:
             application/json:
               schema:
@@ -485,6 +509,7 @@ paths:
       responses:
         '200':
           description: Qualy Standings Response
+          x-summary: Qualy Standings Response
           content:
             application/json:
               schema:
@@ -505,6 +530,7 @@ paths:
       responses:
         '200':
           description: Qualy Statistics Response
+          x-summary: Qualy Statistics Response
           content:
             application/json:
               schema:
@@ -529,6 +555,7 @@ paths:
       responses:
         '200':
           description: Testing Standings Response
+          x-summary: Testing Standings Response
           content:
             application/json:
               schema:
@@ -552,6 +579,7 @@ paths:
       responses:
         '200':
           description: Standings Response
+          x-summary: Standings Response
           content:
             application/json:
               schema:
@@ -569,6 +597,7 @@ paths:
       responses:
         '200':
           description: Tyre Suppliers Response
+          x-summary: Tyre Suppliers Response
           content:
             application/json:
               schema:
@@ -593,6 +622,7 @@ paths:
           description: > 
             Race Replay Response<br>
             Response example is in the tens of thousands lines of data, expand under your own responsibility.
+          x-summary: Race Replay Response
           content:
             application/json:
               schema:
@@ -1365,30 +1395,6 @@ components:
         allOf: 
           - enum: [all, m, p, a, r]
           - $ref: '#/components/schemas/Groups'  
-      Manager:
-        type: object
-        properties:
-          idm:
-            type: integer
-          fn:
-            type: string
-          ln:
-            type: string
-          cups:
-            type: integer
-          group:
-            type: string
-          cpath:
-            type: string
-      Page:
-        type: integer
-        example: 1
-      MinOA: 
-        type: integer
-        example: 70
-      MaxOA: 
-        type: integer
-        example: 201
       SortDriver:    
         type: string
         enum: ['Overall', 'Con', 'Tal', 'Aggresiven', 'Exp', 'TechInsight', 'Stamina', 'Charisma', 'Motivation', 'Reputation', 'Weight', 'Age', 'Sal', 'SignFee']
