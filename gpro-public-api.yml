@@ -3,7 +3,9 @@ info:
   description: |
     # Introduction
 
-    GPRO API is a development meant to serve GPRO Application's Frontend.
+    GPRO App API is a development meant to serve GPRO Applications Frontend.
+    This document curates a selection of endpoints from the GPRO App API to show GPRO managers how to call
+    these selected endpoints to optimize their data collection, providing response schemas and extensive examples.
   title: GPRO App Public API
   version: '1.0.0'
   x-logo:
@@ -12,69 +14,42 @@ info:
 servers:
   - url: https://gpro.net
 tags:
-  - name: Public Endpoints
-    description: No Bearer Token required
-  - name: Private Endpoints
-    description: Bearer Token required
+  - name: Season
+    description: Useful information for the ongoing, past or next season
+  - name: Tracks
+    description: Everything you need to know about GPRO tracks
+  - name: Staff
+    description: Find and analyze staff for your team
+  - name: Sponsors
+    description: Analyze information related to available Sponsors.
+  - name: Race Preparation
+    description: Log your preparation for the next race
+  - name: Race Statistics
+    description: Statistics related to last or the ongoing race
+  - name: Manager Resources
+    description: Log of the selected resource or decisions
+x-tagGroups:
+  - name: General Data
+    tags:
+      - Season
+      - Tracks
+      - Staff
+      - Sponsors
+  - name: Race Data
+    tags: 
+      - Race Preparation
+      - Race Statistics
+  - name: Manager Data
+    tags: 
+      - Manager Resources
 
 
 
 paths:
-
-  # Public Endpoints (no Bearer Token required)
-
-  /backend/api/Login.asp:
-    post:
-      tags: 
-        - Public Endpoints
-      operationId: Login
-      description: Login to GPRO
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'       
-      responses:
-        '200':
-          description: Successful Login
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginSuccess'
-        '401':
-          description: Failed Login
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginFail'
-  /backend/api/GetLang.asp:
-    post:
-      tags: 
-        - Public Endpoints
-      operationId: GetLang
-      description: Obtain user's selected language
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LangRequest'
-      responses:
-        default:
-          description: Successful Language Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LangResponse'
-
-
-  # Private Endpoints (Bearer Token required)
-
-  /backend/api/MenuV2.asp:
+  /{lang}/backend/api/MenuV2.asp:
     get:
       tags: 
-        - Private Endpoints
+        - Manager Resources
       operationId: MenuV2
       description: Retrieving all menu elements
       security:
@@ -86,27 +61,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MenuResponse'
-  /backend/api/Tracks.asp:
-    get:
-      tags:
-        - Private Endpoints
-      operationId: AvailableTracks
-      description: Retrieving All Available Tracks Preview Data
-      security:
-        - Bearer: []  
-      responses:
-        '200':
-          description: All tracks response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TracksResponse'
   /{lang}/backend/api/office.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags: 
-        - Private Endpoints
+        - Manager Resources
       operationId: Office
       description: Retrieving all office elements
       security:
@@ -120,44 +80,44 @@ paths:
                 $ref: '#/components/schemas/OfficeResponse' 
   /{lang}/backend/api/UpdateCar.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags: 
-        - Private Endpoints
+        - Manager Resources
       operationId: GetCar
-      description: Retrieving car parts data for update
+      description: Retrieving car parts data
       security:
         - Bearer: []
       responses:
         '200':
-          description: Car Update Get Response
+          description: Get Car Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CarReponse'
+                $ref: '#/components/schemas/CarResponse'
   /{lang}/backend/api/Practice.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags: 
-        - Private Endpoints
+        - Race Preparation
       operationId: GetPractice
-      description: Retrieve practice data
+      description: Retrieve Practice + Q1 data
       security:
         - Bearer: []
       responses:
         '200':
-          description: Practice Lap Response
+          description: Practice Laps + Q1 Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PracticeResponse'    
   /{lang}/backend/api/Qualify2.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags: 
-        - Private Endpoints
+        - Race Preparation
       operationId: GetQ2Lap
       description: Retrieve Qualy2 data
       security:
@@ -171,10 +131,10 @@ paths:
                 $ref: '#/components/schemas/Qualy2Response'    
   /{lang}/backend/api/Testing.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags: 
-        - Private Endpoints
+        - Race Preparation
       operationId: GetTesting
       description: Retrieve Testing Stints data
       security:
@@ -186,22 +146,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TestingResponse'    
+  /{lang}/backend/api/Tracks.asp:
+    get:
+      tags:
+        - Tracks
+      operationId: GetAllTracksPreview
+      description: Retrieving All Available Tracks' Preview Data
+      security:
+        - Bearer: []  
+      responses:
+        '200':
+          description: All tracks response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TracksResponse'
   /{lang}/backend/api/TrackProfile.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
-    post:
+      - $ref: '#/components/parameters/Lang'
+    get:
       tags: 
-        - Private Endpoints
-      operationId: GetTrack
-      description: Retrieve Track Profile data
+        - Tracks
+      operationId: GetTrackProfile
+      description: |
+        Retrieve Track Profile data
       security:
         - Bearer: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TrackProfileRequest'
+      parameters:
+        - $ref: '#/components/parameters/Id'
       responses:
         '200':
           description: Track Profile Data Response
@@ -211,63 +183,61 @@ paths:
                 $ref: '#/components/schemas/TrackProfileResponse'
   /{lang}/backend/api/AvailDrivers.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
-      operationId: AvailDriversGet
-      description: >
-        Using GET method with no reequest body will return a 1 page, 20 drivers long response, descending order, from the 78-85OA range
+        - Staff
+      operationId: GetAvailDrivers
+      description: |
+        A request with no query parameters will return a 1 page, 20 drivers long response, descending order, with an OA range which upper limit is the maximum OA of the Token's account league.<br>
+        3 Sorting fields can be used, plus filters, as optional parameters.<br><br>
+        To get the full market
+        - Make a first request with MinOA = 0, MaxOA = 300
+        - Use the pageCount in the response as cap to loop through all pages using the same 'MinOA' and 'MaxOA', adding 'Page' for the page number.
       security:
-        - Bearer: []      
+        - Bearer: []    
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/MinOA'
+        - $ref: '#/components/parameters/MaxOA'
+        - $ref: '#/components/parameters/SortDri1'
+        - $ref: '#/components/parameters/SortDri2'
+        - $ref: '#/components/parameters/SortDri3'
+        - $ref: '#/components/parameters/SkillAgr'
+        - $ref: '#/components/parameters/SkillCha'
+        - $ref: '#/components/parameters/SkillCon'
+        - $ref: '#/components/parameters/SkillMot'
+        - $ref: '#/components/parameters/SkillRep'
+        - $ref: '#/components/parameters/SkillSta'
+        - $ref: '#/components/parameters/SkillTal'
+        - $ref: '#/components/parameters/SkillTei'
+        - $ref: '#/components/parameters/ExpRange'
+        - $ref: '#/components/parameters/AgeDriRange'
+        - $ref: '#/components/parameters/MinSalRange'
+        - $ref: '#/components/parameters/OffRange'
+        - $ref: '#/components/parameters/WeiRange'
       responses:
         '200':
           description: Available Drivers Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AvailDriversResponse'        
-    post:
-      tags:
-        - Private Endpoints
-      operationId: AvailDriversPost
-      description: >
-        While it is possible to send an empty form and obtain a response, it's the equivalent of sending the GET request with no request body.<br>
-        The recommendation is to use it with at least MinOA and MaxOA.<br>
-        Sorting is optional (Sort, Sort2, Sort3).<br>
-        The rest of the form fields are filters.<br>
-        To get the full market, make a first request with maximum OA range, then use the pageCount in the response to loop through all pages using 'Page' in the request form.
-      security:
-        - Bearer: []
-      requestBody:
-        required: True
-        content:
-            application/x-www-form-urlencoded:
-              schema:
-                $ref: '#/components/schemas/AvailDriversRequest'
-      responses:
-        '200':
-          description: Available Drivers Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AvailDriversResponse'         
+                $ref: '#/components/schemas/AvailDriversResponse'   
   /{lang}/backend/api/DriProfile.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
-    post:
+      - $ref: '#/components/parameters/Lang'
+    get:
       tags: 
-        - Private Endpoints
+        - Staff
       operationId: GetDriverProfile
-      description: Retrieve Driver Profile data
+      description: |
+        - When called with no query parameters, it'll return the profile of the Token's account driver (if there's a driver under contract).
+        - If called with driver id, it'll return the corresponding profile.
+        - An error message will be present in the response when called with an incorrect id, or if called without id and Token's account does not have a driver under contract.
       security:
         - Bearer: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DriverProfileRequest'
+      parameters:
+        - $ref: '#/components/parameters/DriverTDId'
       responses:
         '200':
           description: Driver Profile Data Response
@@ -277,105 +247,79 @@ paths:
                 $ref: '#/components/schemas/DriverProfileResponse'
   /{lang}/backend/api/AvailTDs.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'    
+      - $ref: '#/components/parameters/Lang'    
     get:
       tags:
-        - Private Endpoints
-      operationId: AvailTDsGet
-      description: >
-        Using GET method with no request body will return a 1 page, 20 TDs long response, descending order, from the 1-90OA range
+        - Staff
+      operationId: GetAvailTDs
+      description: |
+        A request with no query parameters will return a 1 page, 20 TDs long response, descending order, with an OA range which upper limit is the maximum OA of the Token's account league (or lowest one if the Token's account is bellow Pro)<br>
+        3 Sorting fields can be used, plus filters, as optional parameters.<br><br>
+        To get the full market
+        - Make a first request with MinOA = 0, MaxOA = 300
+        - Use the pageCount in the response as cap to loop through all pages using the same 'MinOA' and 'MaxOA', adding 'Page' for the page number.
       security:
-        - Bearer: []      
+        - Bearer: []   
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/MinOA'
+        - $ref: '#/components/parameters/MaxOA'
+        - $ref: '#/components/parameters/SortTD'
+        - $ref: '#/components/parameters/SkillAer'
+        - $ref: '#/components/parameters/SkillEle'
+        - $ref: '#/components/parameters/SkillLea'
+        - $ref: '#/components/parameters/SkillMec'
+        - $ref: '#/components/parameters/SkillMot'
+        - $ref: '#/components/parameters/SkillPit'
+        - $ref: '#/components/parameters/ExpRange'
+        - $ref: '#/components/parameters/AgeTDRange'
+        - $ref: '#/components/parameters/MinSalRange'
+        - $ref: '#/components/parameters/OffRange' 
       responses:
         '200':
           description: Available TDs Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AvailTDsResponse'        
-    post:
-      tags:
-        - Private Endpoints
-      operationId: AvailTDsPost
-      description: >
-        While it is possible to send an empty form and obtain a response, it's the equivalent of sending the GET request with no request body.<br>
-        The recommendation is to use it with at least MinOA and MaxOA.<br>
-        Sorting is optional (Sort).<br>
-        The rest of the form fields are filters.<br>
-        To get the full market, make a first request with maximum OA range, then use the pageCount in the response to loop through all pages using 'Page' in the request form.
-      security:
-        - Bearer: []
-      requestBody:
-        required: True
-        content:
-            application/x-www-form-urlencoded:
-              schema:
-                $ref: '#/components/schemas/AvailTDsRequest'
-      responses:
-        '200':
-          description: Available TDs Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AvailTDsResponse'     
+                $ref: '#/components/schemas/AvailTDsResponse'
   /{lang}/backend/api/TDProfile.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
-    post:
+      - $ref: '#/components/parameters/Lang'
+    get:
       tags: 
-        - Private Endpoints
+        - Staff
       operationId: GetTDProfile
-      description: Retrieve TD Profile data
+      description: |
+        - When called with no query parameters, it'll return the profile of the Token's account TD (if there's a TD under contract).
+        - If called with TD id, it'll return the corresponding profile.
+        - An error message will be present in the response when called with an incorrect id, or if called without id and Token's account does not have a TD under contract.
       security:
         - Bearer: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TDProfileRequest'
+      parameters:
+        - $ref: '#/components/parameters/DriverTDId'
       responses:
         '200':
-          description: Driver Profile Data Response
+          description: TD Profile Data Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TDProfileResponse'
   /{lang}/backend/api/Calendar.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Season
       operationId: GetCalendar
-      description: Retrieving Current and Next Season Calendar for the group of the Token's account.
+      description: |
+        Retrieving Current and Next Season Calendar.
+        - If the endpoint is called without query parameters, it'll return the calendar for the group of the Token's account.
+        - If the account is inactive, it'll return Elite's calendar.
+        - If called with the query parameters, it'll return the chosen's group calendar.
       security:
         - Bearer: []  
-      responses:
-        '200':
-          description: Calendar Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CalendarResponse'
-    # Pick any group 
-    post:
-      tags:
-        - Private Endpoints
-      operationId: GetGroupCalendar
-      description: |
-        Request Body is optional
-        - If the endpoint is called without the request body, it'll return the calendar for the group of the Token's account.
-        - If the account is inactive, it'll return Elite's calendar.
-        - If called with the request body, it'll return the chosen's group calendar.
-      security:
-        - Bearer: []
-      requestBody:
-        required: false
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CalendarRequest'      
+      parameters:
+        - $ref: '#/components/parameters/Group'
       responses:
         '200':
           description: Calendar Response
@@ -385,11 +329,11 @@ paths:
                 $ref: '#/components/schemas/CalendarResponse'
   /{lang}/backend/api/NegOverview.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
-      operationId: NegOverview
+        - Manager Resources
+      operationId: GetSponsorNegotiations
       description: Retrieving Currently Signed Sponsors and Ongoing Negotiations
       security:
         - Bearer: []  
@@ -402,70 +346,50 @@ paths:
                 $ref: '#/components/schemas/NegOverviewResponse'  
   /{lang}/backend/api/AvailSponsors.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Sponsors
       operationId: GetAvailSponsors
-      description: Retrieving Available Sponsors for user's group
+      description: |
+        If called with no query parameters, it returns Available Sponsors for Tokens's group.<br>
+        Otherwise returns sponsors for the sepcified group.
       security:
         - Bearer: []  
+      parameters:
+        - $ref: '#/components/parameters/Group'
       responses:
         '200':
           description: Available Sponsors Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AvailableSponsorsResponse'  
-    post:
-      tags:
-        - Private Endpoints
-      operationId: PostAvailSponsors
-      description: Retrieving Available Sponsors for selected group
-      security:
-        - Bearer: [] 
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AvailableSponsorsRequest'  
-      responses:
-        '200':
-          description: Available Sponsors Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AvailableSponsorsResponse'  
+                $ref: '#/components/schemas/AvailableSponsorsResponse'
   /{lang}/backend/api/NegotiateSponsor.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
-    post:
+      - $ref: '#/components/parameters/Lang'
+    get:
       tags: 
-        - Private Endpoints
-      operationId: NegoSponsor
+        - Sponsors
+      operationId: GetSponsorProfile
       description: Retrieve Sponsor's profile
       security:
         - Bearer: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/NegoSponsorRequest'
+      parameters:
+        - $ref: '#/components/parameters/Id'
       responses:
         '200':
-          description: Negotiate with Sponsor Response
+          description: Sponsor Profile Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NegoSponsorResponse'
+                $ref: '#/components/schemas/SponsorProfileResponse'
   /{lang}/backend/api/RaceSetup.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Race Preparation
       operationId: GetRaceSetup
       description: Retrieve Race Setup Options
       security:
@@ -479,103 +403,56 @@ paths:
                 $ref: '#/components/schemas/RaceSetupResponse'  
   /{lang}/backend/api/StaffAndFacilities.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
-      operationId: GetFacilities
-      description: Facilities
+        - Manager Resources
+      operationId: GetStaffFacilities
+      description: Staff & Facilities
       security:
         - Bearer: []  
       responses:
         '200':
-          description: Facilities Response
+          description: Staff & Facilities Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/S&FResponse'  
   /{lang}/backend/api/RaceAnalysis.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
-    post:
+      - $ref: '#/components/parameters/Lang'
+    get:
       tags: 
-        - Private Endpoints
-      operationId: PostRaceAnalysis
+        - Manager Resources
+      operationId: GetRaceAnalysis
       description: >
-        It'll return the race specified in the request body (if available).<br>
-        If called without a request body, it'll return most reecent race analysis.
+        If called without the query parameter, it'll return most recent race analysis.<br>
+        Otherwise, it returns the specified race analysis.
       security:
         - Bearer: []
-      requestBody:
-        required: false
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/RaceAnalysisRequest'
+      parameters:
+        - $ref: '#/components/parameters/SeasonRace'
       responses:
         '200':
-          description: S&F Response
+          description: Race Analysis Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RaceAnalysisResponse' 
-  /{lang}/backend/api/RaceReplay.asp:
-    parameters:
-      - $ref: '#/components/parameters/LangParameter'
-    post:
-      tags: 
-        - Private Endpoints
-      operationId: GetRaceReplay
-      description: Retrieves Race Replay Data
-      security:
-        - Bearer: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/RaceReplayRequest'
-      responses:
-        '200':
-          description: > 
-            Race Replay Response<br>
-            Response is in the tens of thousands lines of data, scroll until the end under your own responsibility.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RaceReplayResponse'   
+                $ref: '#/components/schemas/RaceAnalysisResponse'   
   /{lang}/backend/api/EconomyHistory.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Manager Resources
       operationId: GetEconomyHistory
-      description: Get Economy History, defaults to 1st page of table format.
+      description: Get Economy History, defaults to 1st page of table format if called with no query parameters.
       security:
         - Bearer: []  
-      responses:
-        '200':
-          description: Economy History Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EconomyHistoryResponse'  
-    post:
-      tags: 
-        - Private Endpoints
-      operationId: PostEconomyHistory
-      description: > 
-        Retrieves Economy History with Request Body.<br>
-        Request body is optional, if not sent, response will default to 1st page of Table.
-      security:
-        - Bearer: []
-      requestBody:
-        required: false
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EconomyHistoryRequest'
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Show'
+        - $ref: '#/components/parameters/Display'
       responses:
         '200':
           description: Economy History Response
@@ -588,23 +465,26 @@ paths:
                   - $ref: '#/components/schemas/EconomyHistoryESGraphResponse'
   /{lang}/backend/api/QStandingsV3.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
-    post:
+      - $ref: '#/components/parameters/Lang'
+    get:
       tags: 
-        - Private Endpoints
-      operationId: PostQualyStandings
-      description: Retrieve Qualy Standings and Starting Grid
+        - Race Statistics
+      operationId: GetQualyStandings
+      description: |
+        Retrieve Qualy Standings and Starting Grid
+        - Part parameter is required.
+        - If no group parameter is used in the request, it returns Token's group.
+        - If token's account is not activated, it defaults to Elite
+        - Responses are 50 managers long. If used with multiple group options, it needs to be called page by page.
       security:
         - Bearer: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/QualyStandingsRequest'
+      parameters:
+        - $ref: '#/components/parameters/QualyTestingStandGroups'
+        - $ref: '#/components/parameters/QualyStandPart'
+        - $ref: '#/components/parameters/QualyTestingStandPage'
       responses:
         '200':
-          description: Economy History Response
+          description: Qualy Standings Response
           content:
             application/json:
               schema:
@@ -614,10 +494,10 @@ paths:
                   - $ref: '#/components/schemas/StartingGridResponse'
   /{lang}/backend/api/QualifyStats.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Race Statistics
       operationId: GetQualyStats
       description: Get qualy statistics.
       security:
@@ -631,72 +511,44 @@ paths:
                 $ref: '#/components/schemas/QualyStatsResponse'    
   /{lang}/backend/api/TestingStandingsV2.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Race Statistics
       operationId: GetTestingStandings
-      description: Get Testing Standings
+      description: |
+        Retrieve Testing Standings
+        - If no group parameter is used in the request, it returns Token's group.
+        - If token's account is not activated, it defaults to Elite
+        - Responses are 50 managers long. If used with multiple group options, it needs to be called page by page.
       security:
         - Bearer: []  
+      parameters:
+        - $ref: '#/components/parameters/QualyTestingStandGroups'
+        - $ref: '#/components/parameters/QualyTestingStandPage'
       responses:
         '200':
           description: Testing Standings Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TestingStandingsResponse' 
-    post:
-      tags: 
-        - Private Endpoints
-      operationId: PostTestingStandings
-      description: Retrieve Testing Standings by Group
-      security:
-        - Bearer: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TestingStandingsRequest'
-      responses:
-        '200':
-          description: Testing Standings Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TestingStandingsResponse' 
+                $ref: '#/components/schemas/TestingStandingsResponse'
   /{lang}/backend/api/Standings.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Season
       operationId: GetStandings
-      description: Get Standings from Token's group
+      description: |
+        Retrieve Season Standings
+        - If the endpoint is called without query parameters, it'll return the standings for the group of the Token's account.
+        - If the account is inactive, it'll return Elite's standings
+        - If called with the query parameters, it'll return the chosen's group standings.
       security:
         - Bearer: []  
-      responses:
-        '200':
-          description: Standings Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StandingsResponse' 
-    post:
-      tags: 
-        - Private Endpoints
-      operationId: PostStandings
-      description: Retrieve Standings by Selected Group<br>
-        If called without request body, it'll return Token's group.
-      security:
-        - Bearer: []
-      requestBody:
-        required: false
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/StandingsRequest'
+      parameters:
+        - $ref: '#/components/parameters/Group'
       responses:
         '200':
           description: Standings Response
@@ -706,10 +558,10 @@ paths:
                 $ref: '#/components/schemas/StandingsResponse' 
   /{lang}/backend/api/TyreSuppliers.asp:
     parameters:
-      - $ref: '#/components/parameters/LangParameter'
+      - $ref: '#/components/parameters/Lang'
     get:
       tags:
-        - Private Endpoints
+        - Season
       operationId: GetTyreSuppliers
       description: Get Tyre Suppliers
       security:
@@ -721,25 +573,503 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TyreSuppliersResponse' 
-
+  /{lang}/backend/api/RaceReplay.asp:
+    parameters:
+      - $ref: '#/components/parameters/Lang'
+    get:
+      tags: 
+        - Race Statistics
+      operationId: GetRaceReplay
+      description: Retrieves Race Replay Data
+      security:
+        - Bearer: []
+      parameters:
+        - $ref: '#/components/parameters/RaceReplayGroup'
+        - $ref: '#/components/parameters/RaceReplayLap'
+        - $ref: '#/components/parameters/RaceReplaySeason'
+        - $ref: '#/components/parameters/RaceReplayRace'
+      responses:
+        '200':
+          description: > 
+            Race Replay Response<br>
+            Response example is in the tens of thousands lines of data, expand under your own responsibility.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RaceReplayResponse' 
 
 
 
 components:
-    parameters:
-      LangParameter:
-        name: lang
-        in: path
-        description: Language code selected by the user
-        required: true
-        schema:
-          $ref: '#/components/schemas/LangOptions'
     securitySchemes:
       Bearer:
         type: http
         scheme: bearer
-        bearerFormat: JWT    
-    
+        bearerFormat: JWT 
+    parameters:
+      Lang:
+        name: lang
+        in: path
+        description: Code for the language
+        required: true
+        schema:
+          $ref: '#/components/schemas/LangOptions'
+      Group:
+        name: group
+        in: query
+        description: Group/League
+        required: false
+        schema:
+          $ref: '#/components/schemas/Groups'
+      Id:
+        name: id
+        in: query
+        description: id
+        required: true
+        schema:
+          type: integer
+      Page:
+        name: Page
+        in: query
+        description: Page
+        required: false
+        schema:
+          type: integer
+          example: 1
+      MinOA: 
+        name: MinOA
+        in: query
+        description: Minimum OA 
+        required: false
+        schema:
+          type: integer
+          example: 70
+      MaxOA:
+        name: MaxOA
+        in: query
+        description: Maximum OA 
+        required: false
+        schema: 
+          type: integer
+          example: 201
+      SortDri1: 
+        name: Sort
+        in: query
+        description: Sort by 
+        required: false
+        schema:
+          $ref: '#/components/schemas/SortDriver'
+      SortDri2: 
+        name: Sort2
+        in: query
+        description: Sort by 
+        required: false
+        schema:
+          $ref: '#/components/schemas/SortDriver'
+      SortDri3: 
+        name: Sort3
+        in: query
+        description: Sort by 
+        required: false
+        schema:
+          $ref: '#/components/schemas/SortDriver'
+      SkillAgr:
+        name: agr
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillCha:
+        name: cha
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillCon:
+        name: con
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillMot:
+        name: mot
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillRep:
+        name: rep
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillSta:
+        name: sta
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillTal:
+        name: tal
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillTei:
+        name: tei
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      ExpRange:
+        name: exp
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+          `'5': 250-300`<br>
+          `'6': 350+`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/ExpRange'
+      AgeDriRange:
+        name: age
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 17-20`<br>
+          `'1': 21-24`<br>
+          `'2': 25-28`<br>
+          `'3': 29-32`<br>
+          `'4': 33-36`<br>
+          `'5': 37+`<br>
+        required: false
+        schema:
+          $ref: "#/components/schemas/AgeDriRange"
+      MinSalRange:
+        name: minsal
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': '1-0.5M'`<br>
+          `'1': '0.5M-1M'`<br>
+          `'2': '1M-1.5M'`<br>
+          `'3': '1.5M-2M'`<br>
+          `'4': '2M-2.5M'`<br>
+          `'5': '2.5M-3M'`<br>
+          `'6': '3M-3.5M'`<br>
+          `'7': '3.5M-4M'`<br>
+          `'8': '4M-4.5M'`<br>
+          `'9': '4.5M-5M'`<br>
+          `'10': '5M-5.5M'`<br>
+          `'11': '5.5M-6M'`<br>
+          `'12': '6M+'`<br>
+        required: false
+        schema:
+          $ref: "#/components/schemas/MinSalRange"
+      OffRange: 
+        name: off
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': '0'`<br>
+          `'1': '1'`<br>
+          `'2': '2'`<br>
+          `'3': '3'`<br>
+          `'4': '4+'`<br>
+        required: false 
+        schema:
+          $ref: '#/components/schemas/OffRange'
+      WeiRange:
+        name: wei
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 40-59`<br>
+          `'1': 60-79`<br>
+          `'2': 80-99`<br>
+          `'3': 100-119`<br>
+          `'4': 120-139`<br>
+          `'5': 140+`<br>
+        required: false
+        schema:
+          $ref: "#/components/schemas/WeiRange"    
+      DriverTDId:
+        name: id
+        in: query
+        description: id
+        required: false
+        schema:
+          type: integer
+      SortTD: 
+        name: Sort
+        in: query
+        description: Sort by 
+        required: false
+        schema:
+          $ref: '#/components/schemas/SortTD'
+      SkillAer:
+        name: aer
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillEle:
+        name: ele
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillLea:
+        name: lea
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillMec:
+        name: mec
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      SkillPit:
+        name: pit
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 0-49`<br>
+          `'1': 50-99`<br>
+          `'2': 100-149`<br>
+          `'3': 150-199`<br>
+          `'4': 200-250`<br>
+        required: false
+        schema:
+          $ref: '#/components/schemas/SkillRange'
+      AgeTDRange:
+        name: age
+        in: query
+        description: >
+          <u>Key</u><br>
+          `'': Any`<br>
+          `'0': 35-`<br>
+          `'1': 36-49`<br>
+          `'2': 50-64`<br>
+          `'3': 65-74`<br>
+          `'4': 75-79`<br>
+          `'5': 80+`<br>
+        required: false
+        schema:
+          $ref: "#/components/schemas/AgeTDRange"
+      QualyTestingStandGroups:
+        name: group
+        in: query
+        description: |
+          <u>Key:</u><br>
+          - `all:` All Groups.
+          - `m:` All Master Groups.
+          - `p:` All Pro Groups.
+          - `a:` All Amateur Groups.
+          - `r:` All Rookie Groups.
+        required: false
+        schema:
+          $ref: '#/components/schemas/ExtendedGroups'
+      QualyStandPart:
+        name: part
+        in: query
+        description: |
+          <u>Key</u><br>
+          - `q1:` Qualy 1.
+          - `q2:` Qualy 2.
+          - `SG:` Starting Grid.
+        required: true
+        schema:
+          type: string
+          enum: [q1, q2, SG]
+          example: q1
+      QualyTestingStandPage:
+        name: page
+        in: query
+        description: page
+        required: false
+        schema:
+          type: string
+          example: '1'
+      RaceReplayGroup:  
+        name: group
+        in: query
+        description: Group
+        required: true
+        schema:
+          $ref: "#/components/schemas/Groups"
+          example: 'Amateur - 8'
+      RaceReplayLap:
+        name: lap
+        in: query
+        description: |
+          - `-1`: Full Race Replay
+          - `0 to max. number of race laps`: Only indicated lap
+        required: true
+        schema:
+          type: integer
+          example: -1
+      RaceReplaySeason:
+        name: season
+        in: query
+        description: Season Number
+        required: true
+        schema:
+          type: integer
+          example: 98
+      RaceReplayRace:
+        name: race
+        in: query
+        description: Race Number
+        required: true
+        schema:
+          type: integer
+          example: 2
+      SeasonRace:
+        name: SR
+        in: query
+        description: Season,Race
+        required: false
+        schema:
+          type: string
+          example: "87,11"
+      Show:
+        name: show
+        in: query
+        description: |
+          <u>Key:</u>
+          - `table`: headers and rows for table display mode.
+          - `graph`: balance graph.
+          - `sgraph`: expeditures graph.
+          - `egraph`: earnings graph.
+        required: false
+        schema:
+          type: string
+          enum: [table, graph, sgraph, egraph]
+          example: table
+      Display:
+        name: display
+        in: query
+        description: | 
+          <u>Key</u>
+          - `allincome`: includes all income/expenditure concepts.
+          - `raceonly`: shows only post race balances.
+        required: false
+        schema:
+          type: string
+          enum: [allincome, raceonly]
+          example: allincome
+
+
     schemas:
 
       # Other Schemas
@@ -747,6 +1077,7 @@ components:
       LangOptions:
         type: string
         enum: ['gb', 'bg', 'de', 'es', 'ro', 'it', 'pt', 'fr', 'pl', 'ru', 'pi', 'br', 'tr', 'be', 'fi', 'lt', 'cz', 'hu', 'mk', 'nl', 'ee', 'sk', 'rs', 'al', 'gr', 'hr', 'my', 'dk'] 
+        example: gb
       Groups:
         type: string
         enum:
@@ -1011,6 +1342,7 @@ components:
           - 'Rookie - 148'
           - 'Rookie - 149'
           - 'Rookie - 150'
+        example: 'Master - 1'
       GroupsArray:
         type: array
         items:
@@ -1031,7 +1363,7 @@ components:
           - `a:` All Amateur Groups.
           - `r:` All Rookie Groups.
         allOf: 
-          - enum: [all, m, p, a]
+          - enum: [all, m, p, a, r]
           - $ref: '#/components/schemas/Groups'  
       Manager:
         type: object
@@ -1048,6 +1380,15 @@ components:
             type: string
           cpath:
             type: string
+      Page:
+        type: integer
+        example: 1
+      MinOA: 
+        type: integer
+        example: 70
+      MaxOA: 
+        type: integer
+        example: 201
       SortDriver:    
         type: string
         enum: ['Overall', 'Con', 'Tal', 'Aggresiven', 'Exp', 'TechInsight', 'Stamina', 'Charisma', 'Motivation', 'Reputation', 'Weight', 'Age', 'Sal', 'SignFee']
@@ -1156,79 +1497,9 @@ components:
    
    
 
-      # Requests and Responses Schemas
+      # Response Schemas
 
-      LoginRequest:
-        type: object
-        properties:
-          email:
-            type: string
-            example: name@domain.com
-          password:
-            type: string
-            example: hhPss!0Ps
-        required:
-          - email
-          - password
-      LoginSuccess:
-        type: object
-        properties:
-          message: 
-            type: string
-            example: Successful login.
-          jwt: 
-            type: string
-            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNDU2Nzg5LCJuYW1lIjoiSm9zZXBoIn0.OpOSSw7e485LOP5PrzScxHb7SR6sAOMRckfFwi4rp7o
-          platform: 
-            type: string
-            example: web
-          email:
-            type: string
-            example: name@domain.com
-      LoginFail:
-        type: object
-        properties:
-          message:
-            type: string
-            example: Login failed.
-          email:
-            type: string
-            example: name@domain.com
-      LangRequest:
-        type: object
-        properties:
-          auto:
-            type: integer
-            enum:
-              - 0
-              - 1
-            description: >
-                Use `1` only at the start of a new user session to detect their language.<br>
-                Save the language to a cookie to avoid detecting it again.<br>
-                Set `auto` to `0` for subsequent requests within the session.<br>
-                Make sure you include the langCode after the domain and<br>
-                before the end point URL for every next call after obtaining it<br>
-                `example: https://gpro.net/gb/api/backend/News.asp`<br>
-        required:
-          - auto
-      LangResponse:
-        type: object
-        properties:
-          langCode:
-            type: string
-            example: gb
-          strings:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: 'home'
-                value:
-                  type: string
-                  example: 'Home'
-      CarReponse:
+      CarResponse:
         type: object
         properties:
           loadingDataState:
@@ -3273,15 +3544,7 @@ components:
             example: 0
           isSupporter:
             type: integer
-            example: 1
-      TrackProfileRequest:
-        type: object
-        properties:
-         id:
-          type: string
-          example: '28' 
-        required:
-          - id        
+            example: 1     
       TrackProfileResponse:
         type: object
         properties:
@@ -3669,14 +3932,6 @@ components:
           hideTrackDesc:
             type: integer
             example: 0
-      DriverProfileRequest:
-        type: object
-        properties:
-          id:
-            type: string
-            example: '11286' 
-        required:
-          - id 
       DriverProfileResponse: 
         type: object
         properties:
@@ -3979,13 +4234,6 @@ components:
           offersFrom:
             type: array
             example: []
-      CalendarRequest:
-        type: object
-        properties:
-          group:
-            $ref: '#/components/schemas/Groups'
-        required:
-          - group
       CalendarResponse:
         type: object
         properties:
@@ -5225,13 +5473,6 @@ components:
           updateInProgress: 0
           raceInProgress: 0
           errorMsg: ""
-      AvailableSponsorsRequest:
-        type: object
-        properties:
-          group:
-            $ref: '#/components/schemas/Groups'
-        required:
-          - group
       AvailableSponsorsResponse:
         type: object
         properties:
@@ -5302,16 +5543,7 @@ components:
               progressColor: "lime"
           totalPages: "1"
           curPage: "1"
-      NegoSponsorRequest:
-        type: object
-        properties:
-          id:
-            type: string
-            example: '16504'
-            description: Sponsor ID
-        required:
-          - id
-      NegoSponsorResponse:
+      SponsorProfileResponse:
         type: object
         properties:
           loadingDataState:
@@ -5918,54 +6150,6 @@ components:
             setGear: 500
             setSusp: 500
           isSupporter: 0
-      AvailDriversRequest:
-        type: object
-        properties:
-          Page:
-            type: integer
-            example: 1
-          MinOA: 
-            type: integer
-            example: 70
-          MaxOA: 
-            type: integer
-            example: 201
-          Sort: 
-            $ref: '#/components/schemas/SortDriver'
-          Sort2: 
-            $ref: '#/components/schemas/SortDriver'
-          Sort3: 
-            $ref: '#/components/schemas/SortDriver'
-          #Filters (upto 3 filters)
-          agr:
-            $ref: '#/components/schemas/SkillRange'
-          cha:
-            $ref: '#/components/schemas/SkillRange'
-          con:
-            $ref: '#/components/schemas/SkillRange'
-          mot:
-            $ref: '#/components/schemas/SkillRange'
-          rep:
-            $ref: '#/components/schemas/SkillRange'
-          sta:
-            $ref: '#/components/schemas/SkillRange'
-          tal:
-            $ref: '#/components/schemas/SkillRange'
-          tei:
-            $ref: '#/components/schemas/SkillRange'
-          exp:
-            $ref: '#/components/schemas/ExpRange'
-          age:
-            $ref: "#/components/schemas/AgeTDRange"
-          minsal:
-            $ref: "#/components/schemas/MinSalRange"
-          off: 
-            $ref: '#/components/schemas/OffRange'
-          wei:
-            $ref: "#/components/schemas/WeiRange"
-        required:
-          - MinOA
-          - MaxOA
       AvailDriversResponse:
         type: object
         properties:
@@ -6587,41 +6771,6 @@ components:
           pageCount: 860
           pageSize: '20'
           pageIndex: 1
-      AvailTDsRequest:
-        type: object
-        properties:
-          Page:
-            type: integer
-            example: 1
-          MinOA: 
-            type: integer
-            example: 1
-          MaxOA: 
-            type: integer
-            example: 150
-          Sort: 
-            $ref: '#/components/schemas/SortTD'
-          #Filters (upto 3 filters)
-          aer:
-            $ref: '#/components/schemas/SkillRange'
-          ele:
-            $ref: '#/components/schemas/SkillRange'
-          lea:
-            $ref: '#/components/schemas/SkillRange'
-          mec:
-            $ref: '#/components/schemas/SkillRange'
-          mot:
-            $ref: '#/components/schemas/SkillRange'
-          pit:
-            $ref: '#/components/schemas/SkillRange'
-          exp:
-            $ref: '#/components/schemas/ExpRange'
-          age:
-            $ref: "#/components/schemas/AgeTDRange"
-          minsal:
-            $ref: "#/components/schemas/MinSalRange"
-          off: 
-            $ref: '#/components/schemas/OffRange'
       AvailTDsResponse:
         type: object
         properties:
@@ -7169,14 +7318,6 @@ components:
           pageCount: 21
           pageSize: '20'
           pageIndex: 1
-      TDProfileRequest:
-        type: object
-        properties:
-          id:
-            type: string
-            example: '106' 
-        required:
-          - id 
       TDProfileResponse:
         type: object
         properties:
@@ -7755,13 +7896,6 @@ components:
           races: 2
           errorMsg: You can't train your staff when your balance is negative
           setType: ''
-      RaceAnalysisRequest:
-        type: object
-        properties:
-          SR:
-            type: string
-            description: "Season,Race"
-            example: "87,11"
       RaceAnalysisResponse:
         type: object
         properties:
@@ -9518,25 +9652,6 @@ components:
             - idx: 1
               lap: 27
               reason: "The cooling of the car stopped functioning"
-      RaceReplayRequest:
-        type: object
-        properties:
-          group:
-            $ref: "#/components/schemas/Groups"
-            example: 'Amateur - 8'
-          lap:
-            type: integer
-            description: |
-              - "-1: Full Race Replay"
-              - 0-number of race laps: Only indicated lap
-            example: -1
-          season:
-            type: integer
-            example: 98
-          race:
-            type: integer
-            example: 2
-        required: [group, lap, season, race]
       RaceReplayResponse:
         type: object
         properties:
@@ -54551,31 +54666,6 @@ components:
             balanceBefore: 30000000
             amount: 1000000
             balanceAfter: 31000000
-      EconomyHistoryRequest:
-        type: object
-        description: |
-          Request body is optional, if not sent, response will default to 1st page of Table
-        properties:
-          Page:
-            type: string
-            example: 1
-          show:
-            type: string
-            enum: [table, graph, sgraph, egraph]
-            description: |
-              <u>Key:</u>
-              table: headers and rows for table display mode.
-              graph: balance graph.
-              sgraph: expeditures graph.
-              egraph: earnings graph.
-            example: table
-          display:
-            type: string
-            enum: [allincome, raceonly]
-            description: | 
-              <u>Key<u>
-              allincome: includes all income/expenditure concepts.
-              raceonly: shows only post race balances.
       EconomyHistoryGraphResponse:
         type: object
         properties:
@@ -54852,23 +54942,6 @@ components:
               data:
               - - Sponsor money
                 - 3000000
-      QualyStandingsRequest:      
-        type: object
-        properties:
-          group:
-            $ref: '#/components/schemas/ExtendedGroups'
-          part:
-            type: string
-            enum: [q1, q2, SG]
-            example: q1
-            description: |
-              <u>Key</u><br>
-              - `q1:` Qualy 1.
-              - `q2:` Qualy 2.
-              - `SG:` Starting Grid.
-          page:
-            type: string
-            example: '1'
       Qualy1StandingsResponse:
         type: object
         properties:
@@ -58512,14 +58585,6 @@ components:
           totalAmateur: 2964
           totalRookie: 6381
           totalManagers: 10585
-      TestingStandingsRequest:
-        type: object
-        properties:
-          group:
-            $ref: '#/components/schemas/ExtendedGroups'
-          page:
-            type: string
-            example: '1'
       TestingStandingsResponse:
         type: object
         properties:
@@ -59117,11 +59182,6 @@ components:
             value: Rookie - 149
           - name: Rookie - 150
             value: Rookie - 150
-      StandingsRequest:
-        type: object
-        properties:
-          group:
-            $ref: '#/components/schemas/Groups'
       StandingsResponse:
         type: object
         properties:
