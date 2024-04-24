@@ -10562,7 +10562,7 @@ components:
                         - Index 16: Pit Crew ID
                         - Index 17: Season Position (at race's end)
                         - Index 18: Season Points (at race's end)
-                        - Index 19: Season Results (at race's end). Each character represents positions 1 to 40, a=0, b=1 and so on.
+                        - Index 19: Season Results (at race's end). Each character represents a position 1st to last, while the particular letter represents the number of occurences, a=0, b=1 and so on.
                         - Index 20: National Code
                         - Index 21: Old Livery Dsiplay Style
                         - Index 22: Driver's Helmet Link
