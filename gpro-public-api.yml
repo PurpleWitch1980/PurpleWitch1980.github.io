@@ -370,8 +370,8 @@ paths:
         - Sponsors
       operationId: GetAvailSponsors
       description: |
-        If called with no query parameters, it returns Available Sponsors for Tokens's group.<br>
-        Otherwise returns sponsors for the sepcified group.
+        If called with no query parameters, it returns Available Sponsors for Tokens's group, or Elite if account is not active.<br>
+        Otherwise returns sponsors for the specified group.
       security:
         - Bearer: []  
       parameters:
@@ -404,6 +404,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SponsorProfileResponse'
+  /{lang}/backend/api/ManSponsors.asp:
+    parameters:
+      - $ref: '#/components/parameters/Lang'
+    get:
+      tags:
+        - Sponsors
+      operationId: GetManSponsors
+      description: |
+        If called with no query parameters, it returns Manager's Sponsors for Tokens's group, or Elite if account is not active.<br>
+        Otherwise returns sponsors for the specified group.
+      security:
+        - Bearer: []  
+      parameters:
+        - $ref: '#/components/parameters/Group'
+      responses:
+        '200':
+          description: Manager's Sponsors Response
+          x-summary: Manager's Sponsors Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagerSponsorsResponse'
   /{lang}/backend/api/RaceSetup.asp:
     parameters:
       - $ref: '#/components/parameters/Lang'
@@ -447,9 +469,11 @@ paths:
       tags: 
         - Manager Resources
       operationId: GetRaceAnalysis
-      description: >
-        If called without the query parameter, it'll return most recent race analysis.<br>
-        Otherwise, it returns the specified race analysis.
+      description: |
+        Retrieving Race Analysys<br>
+        - If called without the query parameter, it'll return most recent race analysis.<br>
+        `Beware that managers with several seasons experience and many races as supporters take considerable time to get a response back using default option.`<br>
+        - Otherwise, it returns the specified race analysis.
       security:
         - Bearer: []
       parameters:
@@ -591,9 +615,13 @@ paths:
       tags:
         - Season
       operationId: GetTyreSuppliers
-      description: Get Tyre Suppliers
+      description: |
+        If called with no query parameters, it returns tyre suppliers for the ongoing season.<br>
+        Otherwise returns tyre suppliers for the specified season.
       security:
         - Bearer: []  
+      parameters:
+        - $ref: '#/components/parameters/Season'
       responses:
         '200':
           description: Tyre Suppliers Response
@@ -645,12 +673,20 @@ components:
         schema:
           $ref: '#/components/schemas/LangOptions'
       Group:
-        name: group
+        name: Group
         in: query
         description: Group/League
         required: false
         schema:
           $ref: '#/components/schemas/Groups'
+      Season:
+        name: season
+        in: query
+        description: Season
+        required: false
+        schema:
+          type: string
+          example: '97'
       Id:
         name: id
         in: query
@@ -5684,6 +5720,819 @@ components:
           updateInProgress: 0
           raceInProgress: 0
           errorMsg: ""
+      ManagerSponsorsResponse:
+        type: object
+        properties:
+          loadingDataState:
+            type: string
+          group:
+            type: string
+          data:
+            type: array
+            items:
+              type: object
+              properties:
+                idx:
+                  type: integer
+                manName:
+                  type: string
+                natCode:
+                  type: string
+                IDM:
+                  type: integer
+                champs:
+                  type: integer
+                sponsorName:
+                  type: string
+                sponsorGroup:
+                  type: string
+                sponsorGroupShort:
+                  type: string
+                sponsorId:
+                  type: integer
+                duration:
+                  type: integer
+                finances:
+                  type: integer
+                expectations:
+                  type: integer
+                patience:
+                  type: integer
+                reputation:
+                  type: integer
+                image:
+                  type: integer
+                negotiation:
+                  type: integer
+          groups:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+        example:
+          loadingDataState: '1'
+          group: Rookie - 148
+          data:
+          - idx: 1
+            manName: Bill Tran
+            natCode: us
+            IDM: 1016772
+            champs: 0
+            sponsorName: Jean Germanior
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41208
+            duration: 29
+            finances: 5
+            expectations: 2
+            patience: 4
+            reputation: 6
+            image: 6
+            negotiation: 1
+          - idx: 2
+            manName: D&#225;vid Barto&#353;
+            natCode: sk
+            IDM: 446873
+            champs: 0
+            sponsorName: Imations
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41205
+            duration: 23
+            finances: 5
+            expectations: 0
+            patience: 5
+            reputation: 4
+            image: 1
+            negotiation: 4
+          - idx: 3
+            manName: Sergio Mar&#237;n
+            natCode: es
+            IDM: 1007595
+            champs: 0
+            sponsorName: TrustMe
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41194
+            duration: 20
+            finances: 6
+            expectations: 2
+            patience: 6
+            reputation: 4
+            image: 4
+            negotiation: 6
+          - idx: 4
+            manName: Marcos Darchuk
+            natCode: ar
+            IDM: 167174
+            champs: 0
+            sponsorName: Sonie
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41191
+            duration: 19
+            finances: 4
+            expectations: 0
+            patience: 2
+            reputation: 5
+            image: 0
+            negotiation: 5
+          - idx: 5
+            manName: Gustavo Santos
+            natCode: br
+            IDM: 1000851
+            champs: 0
+            sponsorName: Simano
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41169
+            duration: 16
+            finances: 1
+            expectations: 6
+            patience: 5
+            reputation: 1
+            image: 5
+            negotiation: 2
+          - idx: 6
+            manName: Ben Raymundo
+            natCode: us
+            IDM: 1034058
+            champs: 0
+            sponsorName: JPMorgen Case
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41217
+            duration: 10
+            finances: 5
+            expectations: 0
+            patience: 0
+            reputation: 1
+            image: 4
+            negotiation: 2
+          - idx: 7
+            manName: Mohsnyp Moh
+            natCode: fr
+            IDM: 1000380
+            champs: 0
+            sponsorName: ORISS
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41187
+            duration: 10
+            finances: 6
+            expectations: 5
+            patience: 2
+            reputation: 6
+            image: 5
+            negotiation: 3
+          - idx: 8
+            manName: Gigiodriver Unknown
+            natCode: mx
+            IDM: 1033847
+            champs: 0
+            sponsorName: RTTL
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41123
+            duration: 9
+            finances: 5
+            expectations: 0
+            patience: 4
+            reputation: 0
+            image: 4
+            negotiation: 3
+          - idx: 9
+            manName: Avi Rocker
+            natCode: in
+            IDM: 1033554
+            champs: 0
+            sponsorName: Paminfo
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41198
+            duration: 9
+            finances: 3
+            expectations: 6
+            patience: 5
+            reputation: 2
+            image: 0
+            negotiation: 2
+          - idx: 10
+            manName: Sg Masser
+            natCode: za
+            IDM: 1033939
+            champs: 0
+            sponsorName: TellTell&amp;Tell
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41145
+            duration: 9
+            finances: 0
+            expectations: 2
+            patience: 3
+            reputation: 2
+            image: 3
+            negotiation: 3
+          - idx: 11
+            manName: Arne Mesic
+            natCode: de
+            IDM: 1033724
+            champs: 0
+            sponsorName: Carnivel Corp
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41252
+            duration: 9
+            finances: 5
+            expectations: 6
+            patience: 4
+            reputation: 2
+            image: 5
+            negotiation: 0
+          - idx: 12
+            manName: Alt Email
+            natCode: en
+            IDM: 1033287
+            champs: 0
+            sponsorName: Fisco
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41132
+            duration: 9
+            finances: 1
+            expectations: 4
+            patience: 5
+            reputation: 5
+            image: 6
+            negotiation: 5
+          - idx: 13
+            manName: Ilkan Aras Okunakol
+            natCode: tr
+            IDM: 1033081
+            champs: 0
+            sponsorName: Hugo Bross
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41254
+            duration: 8
+            finances: 4
+            expectations: 1
+            patience: 1
+            reputation: 3
+            image: 4
+            negotiation: 6
+          - idx: 14
+            manName: Daniele Cimarra
+            natCode: it
+            IDM: 1032902
+            champs: 0
+            sponsorName: Second Data
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41225
+            duration: 8
+            finances: 0
+            expectations: 0
+            patience: 6
+            reputation: 5
+            image: 2
+            negotiation: 1
+          - idx: 15
+            manName: Arthur Ara&#250;jo
+            natCode: br
+            IDM: 1033129
+            champs: 0
+            sponsorName: LM Erics
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41188
+            duration: 8
+            finances: 1
+            expectations: 5
+            patience: 5
+            reputation: 2
+            image: 1
+            negotiation: 0
+          - idx: 16
+            manName: Nicolas Bazan
+            natCode: ar
+            IDM: 1033027
+            champs: 0
+            sponsorName: Intercom
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41250
+            duration: 8
+            finances: 2
+            expectations: 5
+            patience: 6
+            reputation: 0
+            image: 6
+            negotiation: 2
+          - idx: 17
+            manName: Pratham Virani
+            natCode: tz
+            IDM: 1001556
+            champs: 0
+            sponsorName: Moonbucks
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41262
+            duration: 8
+            finances: 4
+            expectations: 0
+            patience: 4
+            reputation: 6
+            image: 4
+            negotiation: 1
+          - idx: 18
+            manName: Philip Bakker
+            natCode: de
+            IDM: 1032514
+            champs: 0
+            sponsorName: Stiffany
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41161
+            duration: 7
+            finances: 3
+            expectations: 3
+            patience: 0
+            reputation: 0
+            image: 1
+            negotiation: 3
+          - idx: 19
+            manName: Test Guy
+            natCode: aq
+            IDM: 943457
+            champs: 0
+            sponsorName: Moet &amp; Chandler
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41275
+            duration: 7
+            finances: 0
+            expectations: 1
+            patience: 3
+            reputation: 4
+            image: 5
+            negotiation: 3
+          - idx: 20
+            manName: Cristobal Mercado
+            natCode: py
+            IDM: 1025553
+            champs: 0
+            sponsorName: Computer Affiliates
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41266
+            duration: 7
+            finances: 2
+            expectations: 5
+            patience: 4
+            reputation: 5
+            image: 1
+            negotiation: 4
+          - idx: 21
+            manName: Julio Martin Scagnet
+            natCode: ar
+            IDM: 1032742
+            champs: 0
+            sponsorName: Oliver Sweaney
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41228
+            duration: 7
+            finances: 4
+            expectations: 6
+            patience: 5
+            reputation: 0
+            image: 6
+            negotiation: 3
+          - idx: 22
+            manName: Alessandro Novo
+            natCode: it
+            IDM: 1032001
+            champs: 0
+            sponsorName: John&amp;John
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41209
+            duration: 6
+            finances: 2
+            expectations: 4
+            patience: 0
+            reputation: 2
+            image: 2
+            negotiation: 1
+          - idx: 23
+            manName: Arie Rohman
+            natCode: id
+            IDM: 1032174
+            champs: 0
+            sponsorName: Novartiz
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41227
+            duration: 6
+            finances: 5
+            expectations: 5
+            patience: 4
+            reputation: 5
+            image: 2
+            negotiation: 2
+          - idx: 24
+            manName: Sidnei Silva
+            natCode: br
+            IDM: 1031625
+            champs: 0
+            sponsorName: BTT Group
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41130
+            duration: 5
+            finances: 1
+            expectations: 4
+            patience: 6
+            reputation: 2
+            image: 5
+            negotiation: 6
+          - idx: 25
+            manName: Thewidow Unknown
+            natCode: tr
+            IDM: 1016594
+            champs: 0
+            sponsorName: German Post
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41221
+            duration: 5
+            finances: 4
+            expectations: 5
+            patience: 0
+            reputation: 2
+            image: 1
+            negotiation: 1
+          - idx: 26
+            manName: Alvaro Alvarovieras
+            natCode: uy
+            IDM: 1031734
+            champs: 0
+            sponsorName: Matsushitas Electrics
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41155
+            duration: 5
+            finances: 3
+            expectations: 1
+            patience: 3
+            reputation: 5
+            image: 3
+            negotiation: 0
+          - idx: 27
+            manName: Rio The Junario The
+            natCode: id
+            IDM: 1031556
+            champs: 0
+            sponsorName: Muurmans
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41245
+            duration: 5
+            finances: 2
+            expectations: 3
+            patience: 4
+            reputation: 5
+            image: 0
+            negotiation: 5
+          - idx: 28
+            manName: Stef H
+            natCode: fr
+            IDM: 1030633
+            champs: 0
+            sponsorName: Alcatelics
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41267
+            duration: 4
+            finances: 4
+            expectations: 2
+            patience: 5
+            reputation: 5
+            image: 4
+            negotiation: 6
+          - idx: 29
+            manName: Dain De V&#228;h
+            natCode: es
+            IDM: 1029895
+            champs: 0
+            sponsorName: Sch&#252;cho
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41235
+            duration: 3
+            finances: 3
+            expectations: 5
+            patience: 2
+            reputation: 4
+            image: 5
+            negotiation: 6
+          - idx: 30
+            manName: Stefan Valtwies
+            natCode: de
+            IDM: 1030532
+            champs: 0
+            sponsorName: Glasunit
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41256
+            duration: 3
+            finances: 6
+            expectations: 1
+            patience: 6
+            reputation: 3
+            image: 2
+            negotiation: 2
+          - idx: 31
+            manName: Falken Van Der Stichelen
+            natCode: be
+            IDM: 1029287
+            champs: 0
+            sponsorName: Excelant Consulting
+            sponsorGroup: Rookie - 148
+            sponsorGroupShort: R148
+            sponsorId: 41263
+            duration: 2
+            finances: 2
+            expectations: 5
+            patience: 2
+            reputation: 3
+            image: 6
+            negotiation: 4
+          groups:
+          - name: Elite
+          - name: Master - 1
+          - name: Master - 2
+          - name: Master - 3
+          - name: Master - 4
+          - name: Master - 5
+          - name: Pro - 1
+          - name: Pro - 2
+          - name: Pro - 3
+          - name: Pro - 4
+          - name: Pro - 5
+          - name: Pro - 6
+          - name: Pro - 7
+          - name: Pro - 8
+          - name: Pro - 9
+          - name: Pro - 10
+          - name: Pro - 11
+          - name: Pro - 12
+          - name: Pro - 13
+          - name: Pro - 14
+          - name: Pro - 15
+          - name: Pro - 16
+          - name: Pro - 17
+          - name: Pro - 18
+          - name: Pro - 19
+          - name: Pro - 20
+          - name: Pro - 21
+          - name: Pro - 22
+          - name: Pro - 23
+          - name: Pro - 24
+          - name: Pro - 25
+          - name: Amateur - 1
+          - name: Amateur - 2
+          - name: Amateur - 3
+          - name: Amateur - 4
+          - name: Amateur - 5
+          - name: Amateur - 6
+          - name: Amateur - 7
+          - name: Amateur - 8
+          - name: Amateur - 9
+          - name: Amateur - 10
+          - name: Amateur - 11
+          - name: Amateur - 12
+          - name: Amateur - 13
+          - name: Amateur - 14
+          - name: Amateur - 15
+          - name: Amateur - 16
+          - name: Amateur - 17
+          - name: Amateur - 18
+          - name: Amateur - 19
+          - name: Amateur - 20
+          - name: Amateur - 21
+          - name: Amateur - 22
+          - name: Amateur - 23
+          - name: Amateur - 24
+          - name: Amateur - 25
+          - name: Amateur - 26
+          - name: Amateur - 27
+          - name: Amateur - 28
+          - name: Amateur - 29
+          - name: Amateur - 30
+          - name: Amateur - 31
+          - name: Amateur - 32
+          - name: Amateur - 33
+          - name: Amateur - 34
+          - name: Amateur - 35
+          - name: Amateur - 36
+          - name: Amateur - 37
+          - name: Amateur - 38
+          - name: Amateur - 39
+          - name: Amateur - 40
+          - name: Amateur - 41
+          - name: Amateur - 42
+          - name: Amateur - 43
+          - name: Amateur - 44
+          - name: Amateur - 45
+          - name: Amateur - 46
+          - name: Amateur - 47
+          - name: Amateur - 48
+          - name: Amateur - 49
+          - name: Amateur - 50
+          - name: Amateur - 51
+          - name: Amateur - 52
+          - name: Amateur - 53
+          - name: Amateur - 54
+          - name: Amateur - 55
+          - name: Amateur - 56
+          - name: Amateur - 57
+          - name: Amateur - 58
+          - name: Amateur - 59
+          - name: Amateur - 60
+          - name: Amateur - 61
+          - name: Amateur - 62
+          - name: Amateur - 63
+          - name: Amateur - 64
+          - name: Amateur - 65
+          - name: Amateur - 66
+          - name: Amateur - 67
+          - name: Amateur - 68
+          - name: Amateur - 69
+          - name: Amateur - 70
+          - name: Amateur - 71
+          - name: Amateur - 72
+          - name: Amateur - 73
+          - name: Amateur - 74
+          - name: Amateur - 75
+          - name: Amateur - 76
+          - name: Amateur - 77
+          - name: Amateur - 78
+          - name: Amateur - 79
+          - name: Amateur - 80
+          - name: Rookie - 1
+          - name: Rookie - 2
+          - name: Rookie - 3
+          - name: Rookie - 4
+          - name: Rookie - 5
+          - name: Rookie - 6
+          - name: Rookie - 7
+          - name: Rookie - 8
+          - name: Rookie - 9
+          - name: Rookie - 10
+          - name: Rookie - 11
+          - name: Rookie - 12
+          - name: Rookie - 13
+          - name: Rookie - 14
+          - name: Rookie - 15
+          - name: Rookie - 16
+          - name: Rookie - 17
+          - name: Rookie - 18
+          - name: Rookie - 19
+          - name: Rookie - 20
+          - name: Rookie - 21
+          - name: Rookie - 22
+          - name: Rookie - 23
+          - name: Rookie - 24
+          - name: Rookie - 25
+          - name: Rookie - 26
+          - name: Rookie - 27
+          - name: Rookie - 28
+          - name: Rookie - 29
+          - name: Rookie - 30
+          - name: Rookie - 31
+          - name: Rookie - 32
+          - name: Rookie - 33
+          - name: Rookie - 34
+          - name: Rookie - 35
+          - name: Rookie - 36
+          - name: Rookie - 37
+          - name: Rookie - 38
+          - name: Rookie - 39
+          - name: Rookie - 40
+          - name: Rookie - 41
+          - name: Rookie - 42
+          - name: Rookie - 43
+          - name: Rookie - 44
+          - name: Rookie - 45
+          - name: Rookie - 46
+          - name: Rookie - 47
+          - name: Rookie - 48
+          - name: Rookie - 49
+          - name: Rookie - 50
+          - name: Rookie - 51
+          - name: Rookie - 52
+          - name: Rookie - 53
+          - name: Rookie - 54
+          - name: Rookie - 55
+          - name: Rookie - 56
+          - name: Rookie - 57
+          - name: Rookie - 58
+          - name: Rookie - 59
+          - name: Rookie - 60
+          - name: Rookie - 61
+          - name: Rookie - 62
+          - name: Rookie - 63
+          - name: Rookie - 64
+          - name: Rookie - 65
+          - name: Rookie - 66
+          - name: Rookie - 67
+          - name: Rookie - 68
+          - name: Rookie - 69
+          - name: Rookie - 70
+          - name: Rookie - 71
+          - name: Rookie - 72
+          - name: Rookie - 73
+          - name: Rookie - 74
+          - name: Rookie - 75
+          - name: Rookie - 76
+          - name: Rookie - 77
+          - name: Rookie - 78
+          - name: Rookie - 79
+          - name: Rookie - 80
+          - name: Rookie - 81
+          - name: Rookie - 82
+          - name: Rookie - 83
+          - name: Rookie - 84
+          - name: Rookie - 85
+          - name: Rookie - 86
+          - name: Rookie - 87
+          - name: Rookie - 88
+          - name: Rookie - 89
+          - name: Rookie - 90
+          - name: Rookie - 91
+          - name: Rookie - 92
+          - name: Rookie - 93
+          - name: Rookie - 94
+          - name: Rookie - 95
+          - name: Rookie - 96
+          - name: Rookie - 97
+          - name: Rookie - 98
+          - name: Rookie - 99
+          - name: Rookie - 100
+          - name: Rookie - 101
+          - name: Rookie - 102
+          - name: Rookie - 103
+          - name: Rookie - 104
+          - name: Rookie - 105
+          - name: Rookie - 106
+          - name: Rookie - 107
+          - name: Rookie - 108
+          - name: Rookie - 109
+          - name: Rookie - 110
+          - name: Rookie - 111
+          - name: Rookie - 112
+          - name: Rookie - 113
+          - name: Rookie - 114
+          - name: Rookie - 115
+          - name: Rookie - 116
+          - name: Rookie - 117
+          - name: Rookie - 118
+          - name: Rookie - 119
+          - name: Rookie - 120
+          - name: Rookie - 121
+          - name: Rookie - 122
+          - name: Rookie - 123
+          - name: Rookie - 124
+          - name: Rookie - 125
+          - name: Rookie - 126
+          - name: Rookie - 127
+          - name: Rookie - 128
+          - name: Rookie - 129
+          - name: Rookie - 130
+          - name: Rookie - 131
+          - name: Rookie - 132
+          - name: Rookie - 133
+          - name: Rookie - 134
+          - name: Rookie - 135
+          - name: Rookie - 136
+          - name: Rookie - 137
+          - name: Rookie - 138
+          - name: Rookie - 139
+          - name: Rookie - 140
+          - name: Rookie - 141
+          - name: Rookie - 142
+          - name: Rookie - 143
+          - name: Rookie - 144
+          - name: Rookie - 145
+          - name: Rookie - 146
+          - name: Rookie - 147
+          - name: Rookie - 148
+          - name: Rookie - 149
+          - name: Rookie - 150
       RaceSetupResponse:
         type: object
         properties:
